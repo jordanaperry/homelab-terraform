@@ -265,12 +265,12 @@ resource "proxmox_virtual_environment_container" "blog" {
   }
 
   cpu {
-    cores = 2
+    cores = 1
   }
 
   memory {
-    dedicated = 2048
-    swap      = 2048
+    dedicated = 512
+    swap      = 512
   }
 
   operating_system {
@@ -327,7 +327,7 @@ resource "proxmox_virtual_environment_container" "keycloak" {
   }
 
   memory {
-    dedicated = 1024
+    dedicated = 2048
   }
 
   operating_system {
