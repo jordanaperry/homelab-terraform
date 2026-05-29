@@ -341,3 +341,54 @@ resource "proxmox_virtual_environment_container" "keycloak" {
 
   start_on_boot = true
 }
+resource "proxmox_virtual_environment_container" "freeipa" {
+  node_name   = "leviathan"
+  vm_id       = 106
+  description = "FreeIPA Identity Management"
+
+  initialization {
+    hostname = "ipa"
+
+    ip_config {
+      ipv4 {
+        address = "192.168.40.31/24"
+        gateway = "192.168.40.1"
+      }
+    }
+
+    dns {
+      servers = ["192.168.40.1"]
+    }
+  }
+
+  network_interface {
+    name     = "eth0"
+    bridge   = "vmbr0"
+    vlan_id  = 40
+    firewall = false
+  }
+
+  disk {
+    datastore_id = "wreck-lvm"
+    size         = 40
+  }
+
+  cpu {
+    cores = 2
+  }
+
+  memory {
+    dedicated = 4096
+  }
+
+  operating_system {
+    template_file_id = "local:vztmpl/rockylinux-9-default_20240912_amd64.tar.xz"
+    type             = "centos"
+  }
+
+  features {
+    nesting = true
+  }
+
+  start_on_boot = true
+}
