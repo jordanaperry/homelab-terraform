@@ -392,3 +392,60 @@ resource "proxmox_virtual_environment_container" "freeipa" {
 
   start_on_boot = true
 }
+resource "proxmox_virtual_environment_container" "vault" {
+  node_name   = "leviathan"
+  vm_id       = 107
+  description = "HashiCorp Vault — secrets management"
+
+  initialization {
+    hostname = "vault"
+
+    ip_config {
+      ipv4 {
+        address = "192.168.40.32/24"
+        gateway = "192.168.40.1"
+      }
+    }
+
+    dns {
+      servers = ["192.168.40.1"]
+    }
+
+    user_account {
+      keys = [
+        trimspace(file("~/.ssh/id_ed25519_vault.pub"))
+      ]
+    }
+  }
+
+  network_interface {
+    name     = "eth0"
+    bridge   = "vmbr0"
+    vlan_id  = 40
+    firewall = false
+  }
+
+  disk {
+    datastore_id = "wreck-lvm"
+    size         = 10
+  }
+
+  cpu {
+    cores = 2
+  }
+
+  memory {
+    dedicated = 1024
+  }
+
+  operating_system {
+    template_file_id = "local:vztmpl/debian-12-standard_12.12-1_amd64.tar.zst"
+    type             = "debian"
+  }
+
+  features {
+    nesting = true
+  }
+
+  start_on_boot = true
+}
